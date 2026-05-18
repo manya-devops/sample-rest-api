@@ -1,0 +1,23 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check Node version
+      run: node -v
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run app
+      run: node server.js
