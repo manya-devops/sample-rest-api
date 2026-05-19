@@ -1,0 +1,34 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+  displayName: 'Install Dependencies'
+
+- script: |
+    echo "Reading config.json"
+
+    DB_CHANGES=$(python3 -c "import json; print(json.load(open('config.json'))['db_changes'])")
+
+    echo "DB Changes = $DB_CHANGES"
+
+    if [ "$DB_CHANGES" = "True" ]; then
+      echo "Database changes detected"
+    else
+      echo "No database changes"
+    fi
+  displayName: 'Validate DB Changes'
+
+- script: |
+    docker build -t sample-rest-api .
+  displayName: 'Build Docker Image'
