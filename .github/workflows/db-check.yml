@@ -1,0 +1,28 @@
+name: DB Changes Check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-db:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Read JSON File
+      run: |
+        echo "Reading config.json"
+
+        DB_CHANGES=$(python3 -c "import json; print(json.load(open('config.json'))['db_changes'])")
+
+        echo "DB Changes = $DB_CHANGES"
+
+        if [ "$DB_CHANGES" = "True" ]; then
+          echo "Database changes detected"
+        else
+          echo "No database changes"
+        fi
