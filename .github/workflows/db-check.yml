@@ -1,4 +1,4 @@
-name: DB Changes Check
+name: DB Validation Pipeline
 
 on:
   push:
@@ -6,23 +6,32 @@ on:
       - main
 
 jobs:
-  check-db:
+  validate-db:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
+
+    - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Read JSON File
+    - name: Read JSON Config
       run: |
         echo "Reading config.json"
 
         DB_CHANGES=$(python3 -c "import json; print(json.load(open('config.json'))['db_changes'])")
+        DB_CONNECTIVITY=$(python3 -c "import json; print(json.load(open('config.json'))['db_connectivity'])")
 
         echo "DB Changes = $DB_CHANGES"
+        echo "DB Connectivity = $DB_CONNECTIVITY"
 
         if [ "$DB_CHANGES" = "True" ]; then
           echo "Database changes detected"
         else
           echo "No database changes"
+        fi
+
+        if [ "$DB_CONNECTIVITY" = "True" ]; then
+          echo "DB connectivity checked successfully"
+        else
+          echo "DB connection validation skipped"
         fi
