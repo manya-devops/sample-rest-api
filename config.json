@@ -1,3 +1,4 @@
 {
-  "db_changes": false
+  "db_changes": true,
+  "db_connectivity": true
 }
